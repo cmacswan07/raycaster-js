@@ -9,6 +9,7 @@ document.body.appendChild(canvas);
 const context = canvas.getContext('2d');
 const TICK = 30;
 const CELL_SIZE = 64;
+const PLAYER_SIZE = 10;
 const map = [
     [1, 1, 1, 1, 1, 1, 1],
     [1, 0, 0, 0, 0, 0, 1],
@@ -21,13 +22,15 @@ const map = [
 
 const player = {
     x: CELL_SIZE * 1.5,
-    Y: CELL_SIZE * 2,
+    y: CELL_SIZE * 2,
     angle: 0,
     speed: 0
 };
 
+console.log(player);
+
 const clearScreen = () => {
-    context.fillStyle = 'red';
+    context.fillStyle = 'blue';
     context.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 }
 
@@ -43,16 +46,29 @@ const renderScene = () => {
 
 }
 
-const renderMiniMap = (posX = 0, posY = 0, scale, rays) => {
+const renderMiniMap = (posX = 0, posY = 0, scale = 1, rays) => {
     const cellSize = scale * CELL_SIZE;
     map.forEach((row, y) => {
         row.forEach((cell, x) => {
             if (cell) {
                 context.fillStyle = 'grey';
-                context.fillRect(posX + x * cellSize, posY + y * cellSize, cellSize, cellSize);
+                context.fillRect(
+                    posX + x * cellSize, 
+                    posY + y * cellSize, 
+                    cellSize, 
+                    cellSize
+                );
             }
-        })
-    })
+        });
+    });
+
+    context.fillStyle = 'orange';
+    context.fillRect(
+        posX + player.x * scale - PLAYER_SIZE / 2,
+        posY + player.y * scale - PLAYER_SIZE / 2,
+        PLAYER_SIZE,
+        PLAYER_SIZE
+    );
 }
 
 const gameLoop = () => {
