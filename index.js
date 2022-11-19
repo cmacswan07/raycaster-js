@@ -256,11 +256,6 @@ document.addEventListener('keyup', (e) => {
     }
 })
 
-// document.addEventListener('mousemove', (e) => {
-//     console.log(e.movementX, 'e.movementX');
-//     player.angle += toRadians(e.movementX);
-// });
-
 document.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft') {
         player.angle -= .05;
