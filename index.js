@@ -18,10 +18,10 @@ const toRadians = (deg) => {
 const PLAYER_FOV = toRadians(60);
 const COLORS = {
     rays: '#fff',
-    floor: '#d52b1e',
-    ceiling: '#ffffff',
-    wall: '#013aa6',
-    wallDark: '#012975'
+    floor: '#657fa8',
+    ceiling: '#6579a8',
+    wall: '#eb34c6',
+    wallDark: '#401838'
 };
 
 const map = [
@@ -256,6 +256,17 @@ document.addEventListener('keyup', (e) => {
     }
 })
 
-document.addEventListener('mousemove', (e) => {
-    player.angle += toRadians(e.movementX);
-});
+// document.addEventListener('mousemove', (e) => {
+//     console.log(e.movementX, 'e.movementX');
+//     player.angle += toRadians(e.movementX);
+// });
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') {
+        player.angle -= .05;
+    }
+
+    if (e.key === 'ArrowRight') {
+        player.angle += .05;
+    }
+})
