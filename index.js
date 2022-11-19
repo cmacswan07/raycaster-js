@@ -10,6 +10,10 @@ const context = canvas.getContext('2d');
 const TICK = 30;
 const CELL_SIZE = 64;
 const PLAYER_SIZE = 10;
+const COLORS = {
+    rays: '#ffa600'
+};
+
 const map = [
     [1, 1, 1, 1, 1, 1, 1],
     [1, 0, 0, 0, 0, 0, 1],
@@ -69,6 +73,17 @@ const renderMiniMap = (posX = 0, posY = 0, scale = 1, rays) => {
         PLAYER_SIZE,
         PLAYER_SIZE
     );
+
+    const rayLength = PLAYER_SIZE * 2;
+    context.strokeStyle = 'orange';
+    context.beginPath();
+    context.moveTo(player.x * scale + posX, player.y * scale + posY);
+    context.lineTo(
+        (player.x + Math.cos(player.angle) * rayLength) * scale,
+        (player.y + Math.sin(player.angle) * rayLength) * scale,
+    );
+    context.closePath();
+    context.stroke();
 }
 
 const gameLoop = () => {
