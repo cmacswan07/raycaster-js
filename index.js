@@ -39,7 +39,8 @@ const clearScreen = () => {
 }
 
 const movePlayer = () => {
-
+    player.x += Math.cos(player.angle) * player.speed;
+    player.y += Math.sin(player.angle) * player.speed;
 }
 
 const getRays = () => {
@@ -64,6 +65,17 @@ const renderMiniMap = (posX = 0, posY = 0, scale = 1, rays) => {
                 );
             }
         });
+    });
+    context.strokeStyle = COLORS.rays;
+    rays.forEach(ray => {
+        context.beginPath();
+        context.moveTo(player.x * scale + posX, player.y * scale + posY);
+        context.lineTo(
+            (player.x + Math.cos(player.angle) * rayLength) * scale,
+            (player.y + Math.sin(player.angle) * rayLength) * scale,
+        );
+        context.closePath();
+        context.stroke();
     });
 
     context.fillStyle = 'orange';
@@ -95,3 +107,27 @@ const gameLoop = () => {
 }
 
 setInterval(gameLoop, TICK);
+
+const toRadians = (deg) => {
+    return (deg * Math.PI) / 180;
+}
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowUp') {
+        player.speed = 2;
+    }
+
+    if (e.key === 'ArrowDown') {
+        player.speed = -2;
+    }
+});
+
+document.addEventListener('keyup', (e) => {
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        player.speed = 0;
+    }
+})
+
+document.addEventListener('mousemove', (e) => {
+    player.angle += toRadians(e.movementX);
+});
