@@ -17,7 +17,11 @@ const toRadians = (deg) => {
 
 const PLAYER_FOV = toRadians(60);
 const COLORS = {
-    rays: '#fff'
+    rays: '#fff',
+    floor: '#d52b1e',
+    ceiling: '#ffffff',
+    wall: '#013aa6',
+    wallDark: '#012975'
 };
 
 const map = [
@@ -159,8 +163,23 @@ const getRays = () => {
     })
 }
 
-const renderScene = () => {
+const renderScene = (rays) => {
+    rays.forEach((ray, i) => {
+        const distance = ray.distance;
 
+        // draw wall
+        const wallHeight = (CELL_SIZE * 5) / distance * 277;
+        context.fillStyle = ray.vertical ? COLORS.wallDark : COLORS.wall;
+        context.fillRect(i, SCREEN_HEIGHT / 2 - wallHeight / 2, 1, wallHeight);
+
+        // draw floor
+        context.fillStyle = COLORS.floor;
+        context.fillRect(i, SCREEN_HEIGHT / 2 + wallHeight / 2, 1, SCREEN_HEIGHT / 2 - wallHeight / 2);
+
+        // draw ceiling
+        context.fillStyle = COLORS.ceiling;
+        context.fillRect(i, 0, 1, SCREEN_HEIGHT / 2 - wallHeight / 2);
+    });
 }
 
 const renderMiniMap = (posX = 0, posY = 0, scale = 1, rays) => {
