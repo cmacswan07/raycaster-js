@@ -11,6 +11,14 @@ const TICK = 30;
 const CELL_SIZE = 64;
 const PLAYER_SIZE = 10;
 
+const getLinearGradientVertical = (color1, color2, color3) => {
+    const linGrad = context.createLinearGradient(0, 0, 0, SCREEN_HEIGHT);
+    linGrad.addColorStop(0, color1);
+    linGrad.addColorStop(0.5, color2);
+    linGrad.addColorStop(1, color3);
+    return linGrad;
+}
+
 const toRadians = (deg) => {
     return (deg * Math.PI) / 180;
 }
@@ -18,8 +26,8 @@ const toRadians = (deg) => {
 const PLAYER_FOV = toRadians(60);
 const COLORS = {
     rays: '#fff',
-    floor: '#657fa8',
-    ceiling: '#6579a8',
+    floor: ['#020024', '#090979', '#00D4FF'],
+    ceiling: ['#00d4ff', '#097962', '#020024'],
     wall: '#eb34c6',
     wallDark: '#401838'
 };
@@ -173,11 +181,11 @@ const renderScene = (rays) => {
         context.fillRect(i, SCREEN_HEIGHT / 2 - wallHeight / 2, 1, wallHeight);
 
         // draw floor
-        context.fillStyle = COLORS.floor;
+        context.fillStyle = getLinearGradientVertical(COLORS.floor[0], COLORS.floor[1], COLORS.floor[2]);
         context.fillRect(i, SCREEN_HEIGHT / 2 + wallHeight / 2, 1, SCREEN_HEIGHT / 2 - wallHeight / 2);
 
         // draw ceiling
-        context.fillStyle = COLORS.ceiling;
+        context.fillStyle = getLinearGradientVertical(COLORS.ceiling[0], COLORS.ceiling[1], COLORS.ceiling[2]);
         context.fillRect(i, 0, 1, SCREEN_HEIGHT / 2 - wallHeight / 2);
     });
 }
@@ -188,6 +196,14 @@ const renderMiniMap = (posX = 0, posY = 0, scale = 1, rays) => {
         row.forEach((cell, x) => {
             if (cell) {
                 context.fillStyle = 'grey';
+                context.fillRect(
+                    posX + x * cellSize, 
+                    posY + y * cellSize, 
+                    cellSize, 
+                    cellSize
+                );
+            } else {
+                context.fillStyle = 'blue';
                 context.fillRect(
                     posX + x * cellSize, 
                     posY + y * cellSize, 
@@ -248,20 +264,19 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowDown') {
         player.speed = -2;
     }
-});
 
-document.addEventListener('keyup', (e) => {
-    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-        player.speed = 0;
-    }
-})
-
-document.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft') {
         player.angle -= .05;
     }
 
     if (e.key === 'ArrowRight') {
         player.angle += .05;
+    }
+});
+
+
+document.addEventListener('keyup', (e) => {
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        player.speed = 0;
     }
 })
