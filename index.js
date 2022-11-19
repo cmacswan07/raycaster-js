@@ -10,7 +10,12 @@ const context = canvas.getContext('2d');
 const TICK = 30;
 const CELL_SIZE = 64;
 const PLAYER_SIZE = 10;
-const PLAYER_FOV = 60;
+
+const toRadians = (deg) => {
+    return (deg * Math.PI) / 180;
+}
+
+const PLAYER_FOV = toRadians(60);
 const COLORS = {
     rays: '#fff'
 };
@@ -91,14 +96,50 @@ const getVCollision = (angle) => {
 }
 
 const getHCollision = (angle) => {
+    const up = Math.abs(Math.floor(angle / Math.PI) % 2);
+    const firstY = up ?
+        Math.floor(player.y / CELL_SIZE) * CELL_SIZE
+    :
+        Math.floor(player.y / CELL_SIZE) * CELL_SIZE + CELL_SIZE
+    ;
 
+    const firstX = player.x + (firstY - player.y) / Math.tan(angle);
+
+    const yA = up ?
+        -CELL_SIZE
+    :
+        CELL_SIZE
+    ;
+    const xA = yA / Math.tan(angle);
+
+    let wall;
+    let nextX = firstX;
+    let nextY = firstY;
+    
+    while (!wall) {
+        const cellX = Math.floor(nextX / CELL_SIZE);
+        const cellY = up ?
+            Math.floor(nextY / CELL_SIZE) - 1
+        : 
+            Math.floor(nextY / CELL_SIZE)
+        ;
+
+        if (outOfMapBounds(cellX, cellY)) {
+            break;
+        }
+        wall = map[cellY][cellX];
+
+        if (!wall) {
+            nextX += xA;
+            nextY += yA;
+        }
+    }
+    return { angle, distance: distance(player.x, player.y, nextX, nextY), vertical: false }
 }
 
 const castRay = (angle) => {
     const vCollision = getVCollision(angle);
-    // const hCollision = getHCollision(angle);
-
-    return vCollision;
+    const hCollision = getHCollision(angle);
 
     return hCollision.distance >= vCollision.distance ?
         vCollision 
@@ -179,10 +220,6 @@ const gameLoop = () => {
 }
 
 setInterval(gameLoop, TICK);
-
-const toRadians = (deg) => {
-    return (deg * Math.PI) / 180;
-}
 
 document.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowUp') {
